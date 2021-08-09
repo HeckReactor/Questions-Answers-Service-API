@@ -1,0 +1,32 @@
+{
+  "name": "questions-and-answers-api",
+  "version": "1.0.0",
+  "description": "Heck Yes!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HeckReactor/Questions-Answers-Service-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HeckReactor/Questions-Answers-Service-API/issues"
+  },
+  "homepage": "https://github.com/HeckReactor/Questions-Answers-Service-API#readme",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.0",
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "knex": "^0.21.20"
+  }
+}
