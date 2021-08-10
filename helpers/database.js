@@ -8,15 +8,8 @@ const config = {
   database: process.env.PG_DATABASE,
 };
 
-console.log(config);
-
 const pool = new Pool(config);
 const client = new Client(config);
-
-pool.query('SELECT NOW()', (err, res) => {
-  console.log(err, res);
-  pool.end();
-});
 
 module.exports = {
   pool,
