@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 module.exports = ([statusCode, data], req, res, next) => {
   const responses = {
     200: { message: 'Success', data },
