@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "etl": "node ./models/etl/etl-data.js 2 ./file.csv",
+    "etl-photos": "node ./models/etl/parseData.js photos",
+    "etl-answers": "node ./models/etl/parseData.js answers",
+    "etl-questions": "node ./models/etl/parseData.js questions",
+    "etl-products": "node ./models/etl/parseData.js products",
     "dbinit": "node ./models/etl/etl-data.js 1"
   },
   "repository": {

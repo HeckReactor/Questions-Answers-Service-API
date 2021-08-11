@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const parse = require('csv-parse');
-require('dotenv').config();
 
 const { client } = require('../../helpers/database');
 
