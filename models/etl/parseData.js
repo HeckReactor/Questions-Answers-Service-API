@@ -8,6 +8,7 @@ const { pool } = require('../../helpers/database');
 const datasetName = process.argv[2];
 
 const parseProducts = async () => {
+  const client = await pool.connect();
   const somePath = path.join(__dirname, './data/product.csv');
   const parser = fs.createReadStream(path.join(somePath))
     .pipe(parse());
@@ -16,9 +17,10 @@ const parseProducts = async () => {
   for await (const record of parser) {
     count += 1;
     if (count > 1) {
-      console.log(record);
+      if (record[0] < 256444) continue;
+      if (!(count % 10)) console.log(record);
       try {
-        await pool.query(`
+        await client.query(`
           INSERT INTO products (
             id,
             product_name,
@@ -27,11 +29,15 @@ const parseProducts = async () => {
             category,
             default_price
           ) VALUES ($1, $2, $3, $4, $5, $6)
-        `, record)} catch(e){console.log(e)}
+        `, record);
+      } catch(e) {
+        console.log(e);
+      }
     }
-    if (count === 5) return;
+    // if (count === 200) return;
   }
   process.stdout.write(`Operation Complete. ${count} records processed.\n`);
+  process.exit();
 };
 
 const parseQuestions = async () => {
