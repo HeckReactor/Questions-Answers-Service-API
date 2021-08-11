@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-
-require('dotenv').config();
+const parse = require('csv-parse');
 
 const { client } = require('../../helpers/database');
 
@@ -26,16 +25,17 @@ const initializeDatabase = async () => {
 };
 
 const parseAndInsertData = () => {
-
+  console.log('test');
+  return 1;
 };
 
 (async () => {
   if (modeArg === '1') {
     await initializeDatabase();
-    process.exit();
-  } else if (modeArg === 2) {
-    parseAndInsertData();
+  } else if (modeArg === '2') {
+    await parseAndInsertData();
   }
+  process.exit();
 })();
 
 // process.stdout.write(`${dataFilePath}\n`);
