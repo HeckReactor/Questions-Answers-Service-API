@@ -1,3 +1,5 @@
+models/etl/data/*
+
 # Logs
 logs
 *.log
