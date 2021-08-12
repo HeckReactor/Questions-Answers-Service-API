@@ -1,23 +1,49 @@
 const router = require('express').Router();
+const Models = require('../../models');
+
+// GET /qa/questions/:question_id/answers
+router.get('/questions/:question_id/answers', (req, res, next) => {
+  Models.qa.questions.get();
+  console.log(req.params);
+  next();
+});
+
+// POST /qa/questions/:question_id/answers
+router.post('/questions/:question_id/answers', (req, res, next) => {
+
+});
+
+// PUT /qa/questions/:question_id/helpful
+router.put('/qa/questions/:question_id/helpful', (req, res, next) => {
+
+});
+
+// PUT /qa/questions/:question_id/report
+router.put('/questions/:question_id/report', (req, res, next) => {
+
+});
+
+// PUT /qa/answers/:answer_id/helpful
+router.put('/answers/:answer_id/helpful', (req, res, next) => {
+
+});
+
+// PUT /qa/answers/:answer_id/report
+router.put('/answers/:answer_id/report', (req, res, next) => {
+  console.log(req.params);
+});
+
+// POST /qa/questions
+router.post('/questions', (req, res, next) => {
+  console.log(req.params);
+  next([200, 'test']);
+});
 
 // GET /qa/questions
-// GET /qa/questions/:question_id/answers
-// POST /qa/questions
-// POST /qa/questions/:question_id/answers
-// PUT /qa/questions/:question_id/helpful
-// PUT /qa/questions/:question_id/report
-// PUT /qa/answers/:answer_id/helpful
-// PUT /qa/answers/:answer_id/report
-
-router.get('/questions/:question_id/answers');
-
-router.post('/questions', (req, res, next) => {
-  next([200, 'test']);
-  // questions model
-});
-router.get('/questions', (req, res, next) => {
-  next([200, 'test']);
-  // questions model
+router.get('/questions', async (req, res, next) => {
+  const [err, questions] = await Models.qa.questions.get(req.query);
+  if (err) next([err]);
+  next([200, questions]);
 });
 
 module.exports = router;

@@ -16,4 +16,13 @@ module.exports = {
   },
   rules: {
   },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['#db', './helpers/database.js'],
+        ],
+      },
+    },
+  },
 };
