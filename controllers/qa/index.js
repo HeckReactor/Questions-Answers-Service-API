@@ -1,4 +1,5 @@
 const router = require('express').Router();
+
 const Models = require('../../models');
 
 // GET /qa/questions/:question_id/answers
