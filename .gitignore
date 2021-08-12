@@ -1,4 +1,4 @@
-models/etl/data/*
+models/etl/data/*.csv
 
 # Logs
 logs
