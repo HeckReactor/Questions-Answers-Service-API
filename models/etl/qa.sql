@@ -17,10 +17,10 @@ CREATE TABLE questions (
   product_id INTEGER NOT NULL REFERENCES products(id),
   helpful INTEGER DEFAULT 0,
   reported BOOLEAN DEFAULT 'false',
-  body VARCHAR,
+  body VARCHAR NOT NULL,
   username VARCHAR(100),
   email VARCHAR(255),
-  created_at timestamp
+  created_at timestamp with time zone
 );
 
 CREATE TABLE answers (
@@ -28,9 +28,10 @@ CREATE TABLE answers (
   question_id INTEGER NOT NULL REFERENCES questions(id),
   helpful INTEGER DEFAULT 0,
   reported BOOLEAN DEFAULT 'false',
-  body VARCHAR,
+  body VARCHAR NOT NULL,
   username VARCHAR(100),
-  created_at timestamp
+  email VARCHAR(255),
+  created_at timestamp with time zone
 );
 
 CREATE TABLE photos (
