@@ -9,37 +9,46 @@ const getQuestions = async ({ product_id, page, count }) => {
     // Source:
     // https://stackoverflow.com/questions/38458318/returning-postgres-nested-json-array
     const result = await client.query(`
-      select jsonb_agg(js_object) result
-      from (
-        select
+      SELECT jsonb_agg(js_obj) result
+      FROM (
+        SELECT
           jsonb_build_object(
-            'question_id', id,
+            'question_id', 'id',
             'question_body', body,
             'question_date', created_at,
             'asker_name', username,
             'question_helpfulness', helpful,
             'reported', reported,
-            'answersTotal', count(distinct s.id),
             'answers', jsonb_agg(ans_obj)
-          ) js_object
-        from (
-          select
-            t.*,
+          ) js_obj
+        FROM (
+          SELECT
+            q.*,
             jsonb_build_object(
-              s.id, jsonb_build_object(
-                'id', s.id,
-                'body', s.body,
-                'date', s.created_at,
-                'answerer_name', s.username,
-                'helpfulness', s.helpful,
-                'photos', '[]'::jsonb
+              ans.id, jsonb_build_object(
+                'id', ans.id,
+                'body', ans.body,
+                'date', ans.created_at,
+                'answerer_name', ans.username,
+                'helpfulness', ans.helpful,
+                'photos', jsonb_agg(photo_obj)
               )
             ) ans_obj
-          from questions t
-          join answers s on s.question_id = t.id
-          where t.product_id = $1
-        ) s
-        group by id, username, body, created_at, helpful, reported
+          FROM (
+            SELECT
+              a.*,
+              jsonb_build_object(
+                'id', p.id,
+                'url', p.photo_url
+              ) photo_obj
+            FROM answers a
+            JOIN photos p ON p.answer_id = a.id
+          ) ans
+          JOIN questions q ON ans.question_id = q.id
+          WHERE q.product_id = $1
+          GROUP BY q.id, ans.id, ans.body, ans.created_at, ans.username, ans.helpful
+        ) j
+        GROUP BY id, username, body, created_at, helpful, reported
       ) s;
     `, [product_id]);
     console.log(result.rows);
