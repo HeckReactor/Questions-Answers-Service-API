@@ -9,7 +9,15 @@ const getQuestions = async ({ product_id, page, count }) => {
     // Source:
     // https://stackoverflow.com/questions/38458318/returning-postgres-nested-json-array
     const result = await client.query(`
-      SELECT jsonb_agg(js_obj) result
+      SELECT
+        jsonb_build_object(
+        'totalCount', (
+          SELECT COUNT(*)
+          FROM questions q
+          WHERE q.product_id = $1
+        ),
+        'results', jsonb_agg(js_obj)
+      )
       FROM (
         SELECT
           jsonb_build_object(
@@ -19,7 +27,7 @@ const getQuestions = async ({ product_id, page, count }) => {
             'asker_name', username,
             'question_helpfulness', helpful,
             'reported', reported,
-            'answers', jsonb_agg(ans_obj)
+            'answers', ans_obj
           ) js_obj
         FROM (
           SELECT
@@ -47,14 +55,16 @@ const getQuestions = async ({ product_id, page, count }) => {
           JOIN questions q ON ans.question_id = q.id
           WHERE q.product_id = $1
           GROUP BY q.id, ans.id, ans.body, ans.created_at, ans.username, ans.helpful
+          LIMIT $2
         ) j
-        GROUP BY id, username, body, created_at, helpful, reported
+        GROUP BY id, username, body, created_at, helpful, reported, ans_obj
       ) s;
-    `, [product_id]);
-    console.log(result.rows);
+    `, [product_id, count]);
+    console.log(result.rows[0]);
     return [null, {
       product_id,
-      results: result.rows[0].result,
+      results: result.rows[0].jsonb_build_object.results,
+      totalCount: result.rows[0].jsonb_build_object.totalCount,
     }];
   } catch (e) {
     console.log(e);
