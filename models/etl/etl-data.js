@@ -1,13 +1,14 @@
 const path = require('path');
 const fs = require('fs');
 
-const { client } = require('../../helpers/database');
+const { pool } = require('../../helpers/database');
 
 const [,, modeArg] = process.argv;
 
 const initializeDatabase = async () => {
   process.stdout.write('\x1b[36m\x1b[1mScript started... Populating database.\x1b[0m \n\n');
   const dataFilePath = path.join(__dirname, 'qa.sql');
+  const client = await pool.connect();
   try {
     const sqlFileContent = fs.readFileSync(dataFilePath).toString().split(';');
     for (let i = 0; i < sqlFileContent.length - 1; i += 1) {
@@ -20,6 +21,8 @@ const initializeDatabase = async () => {
   } catch (e) {
     process.stdout.write('\x1b[31m\x1b[1mScript terminated. The following error has occurred with the script execution:\x1b[0m\n');
     process.stdout.write(`${e.stack}\n\n`);
+  } finally {
+    client.release();
   }
 };
 

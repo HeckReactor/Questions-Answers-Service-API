@@ -8,7 +8,6 @@ const { pool } = require('../../helpers/database');
 const datasetName = process.argv[2];
 
 const parseProducts = async () => {
-  const client = await pool.connect();
   const somePath = path.join(__dirname, './data/product.csv');
   const parser = fs.createReadStream(path.join(somePath))
     .pipe(parse());
@@ -20,6 +19,7 @@ const parseProducts = async () => {
       if (!(count % 50)) process.stdout.write(`${count} | ${record.join(',')}\n\n`);
       // Resume at a record
       // if (record[0] < 88256444) continue;
+      const client = await pool.connect();
       try {
         await client.query(`
           INSERT INTO products (
@@ -33,17 +33,17 @@ const parseProducts = async () => {
         `, record);
       } catch (e) {
         process.stdout.write(`${e.stack}\n`);
+      } finally {
+        client.release();
       }
     }
   }
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
-  process.exit();
+  return 1;
 };
 
 const parseQuestions = async () => {
-  const client = await pool.connect();
   const somePath = path.join(__dirname, './data/questions.csv');
-  // const somePath = path.join(__dirname, './data/characteristics.csv');
   const parser = fs.createReadStream(path.join(somePath))
     .pipe(parse());
   let count = 0;
@@ -57,6 +57,7 @@ const parseQuestions = async () => {
       // if (record[0] < 88256444) continue;
       const dateObject = new Date(Number(record[3]));
       record[3] = dateObject.toISOString();
+      const client = await pool.connect();
       try {
         await client.query(`
           INSERT INTO questions (
@@ -72,19 +73,19 @@ const parseQuestions = async () => {
         `, record);
       } catch (e) {
         process.stdout.write(`${e.stack}\n`);
+      } finally {
+        client.release();
       }
     } else {
       process.stdout.write(`${record}\n`);
     }
   }
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
-  process.exit();
+  return 1;
 };
 
 const parseAnswers = async () => {
-  const client = await pool.connect();
   const somePath = path.join(__dirname, './data/answers.csv');
-  // const somePath = path.join(__dirname, './data/characteristics.csv');
   const parser = fs.createReadStream(path.join(somePath))
     .pipe(parse());
   let count = 0;
@@ -98,6 +99,7 @@ const parseAnswers = async () => {
       // if (record[0] < 88256444) continue;
       const dateObject = new Date(Number(record[3]));
       record[3] = dateObject.toISOString();
+      const client = await pool.connect();
       try {
         await client.query(`
           INSERT INTO answers (
@@ -113,19 +115,19 @@ const parseAnswers = async () => {
         `, record);
       } catch (e) {
         process.stdout.write(`${e.stack}\n`);
+      } finally {
+        client.release();
       }
     } else {
       process.stdout.write(`${record}\n`);
     }
   }
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
-  process.exit();
+  return 1;
 };
 
 const parseAnswerPhotos = async () => {
-  const client = await pool.connect();
   const somePath = path.join(__dirname, './data/answers_photos.csv');
-  // const somePath = path.join(__dirname, './data/characteristics.csv');
   const parser = fs.createReadStream(path.join(somePath))
     .pipe(parse());
   let count = 0;
@@ -137,6 +139,7 @@ const parseAnswerPhotos = async () => {
       if (!(count % 50)) process.stdout.write(`${count} | ${record.join(',')}\n\n`);
       // Resume at a record
       // if (record[0] < 88256444) continue;
+      const client = await pool.connect();
       try {
         await client.query(`
           INSERT INTO photos (
@@ -147,13 +150,23 @@ const parseAnswerPhotos = async () => {
         `, record);
       } catch (e) {
         process.stdout.write(`${e.stack}\n`);
+      } finally {
+        client.release();
       }
     } else {
       process.stdout.write(`${record}\n`);
     }
   }
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
-  process.exit();
+  return 1;
+};
+
+const parseAll = async () => {
+  await parseProducts();
+  await parseQuestions();
+  await parseAnswers();
+  await parseAnswerPhotos();
+  pool.end();
 };
 
 const parseMethods = {
@@ -161,6 +174,7 @@ const parseMethods = {
   questions: parseQuestions,
   answers: parseAnswers,
   photos: parseAnswerPhotos,
+  all: parseAll,
 };
 
 parseMethods[datasetName]();

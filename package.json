@@ -10,6 +10,7 @@
     "etl-answers": "node ./models/etl/parseData.js answers",
     "etl-questions": "node ./models/etl/parseData.js questions",
     "etl-products": "node ./models/etl/parseData.js products",
+    "etl-all": "node ./models/etl/parseData.js all",
     "dbinit": "node ./models/etl/etl-data.js 1"
   },
   "repository": {
