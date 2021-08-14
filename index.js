@@ -7,6 +7,10 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/loaderio-43eeefe2c5eafff4e5fd56b1fc6cbeac', (req, res) => {
+  res.status(200).send('loaderio-43eeefe2c5eafff4e5fd56b1fc6cbeac');
+});
+
 app.use('/', require('./controllers'));
 
 app.use((req, res) => {
