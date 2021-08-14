@@ -1,4 +1,5 @@
 models/etl/data/*.csv
+newrelic.js
 
 # Logs
 logs
