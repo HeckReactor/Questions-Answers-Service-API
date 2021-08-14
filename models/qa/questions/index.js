@@ -20,6 +20,14 @@ const getQuestions = async ({ product_id, page = 0, count = 5 }) => {
   }
 };
 
+const getAnswers = async () => {
+  try {
+    return [200];
+  } catch (e) {
+    return [500];
+  }
+};
+
 const postQuestion = () => {
   console.log('post');
 };
@@ -27,4 +35,5 @@ const postQuestion = () => {
 module.exports = {
   get: getQuestions,
   post: postQuestion,
+  getAnswers,
 };

@@ -3,9 +3,9 @@ const router = require('express').Router();
 const Models = require('../../models');
 
 // GET /qa/questions/:question_id/answers
-router.get('/questions/:question_id/answers', (req, res, next) => {
-  Models.qa.questions.get();
-  console.log(req.params);
+router.get('/questions/:question_id/answers', async (req, res, next) => {
+  const [err, answers] = await Models.qa.questions.getAnswers(req.params.question_id);
+  if (err) return next([500]);
   next();
 });
 
@@ -43,8 +43,8 @@ router.post('/questions', (req, res, next) => {
 // GET /qa/questions
 router.get('/questions', async (req, res, next) => {
   const [err, questions] = await Models.qa.questions.get(req.query);
-  if (err) next([err]);
-  next([200, questions]);
+  if (err) return next([err]);
+  return next([200, questions]);
 });
 
 module.exports = router;
