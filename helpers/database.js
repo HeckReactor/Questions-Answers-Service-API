@@ -10,11 +10,11 @@ const config = {
 };
 
 const pool = new Pool(config);
-const client = new Client(config);
+// const client = new Client(config);
 
-client.connect();
+// client.connect();
 
 module.exports = {
   pool,
-  client,
+  // client,
 };

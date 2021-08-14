@@ -39,3 +39,7 @@ CREATE TABLE photos (
   answer_id INTEGER REFERENCES answers(id),
   photo_url VARCHAR(255) NOT NULL
 );
+
+CREATE INDEX photos_answerid on photos (answer_id);
+CREATE INDEX answers_questionid on answers (question_id);
+CREATE INDEX questions_productid on questions (product_id);
