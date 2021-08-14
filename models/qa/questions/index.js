@@ -8,8 +8,8 @@ const getQuestions = async ({ product_id, page = 0, count = 5 }) => {
   if ([parseInt(page, 10), parseInt(count, 10)].includes(NaN)) return [400];
   if (parseInt(page, 10) < 0 || parseInt(count, 10) < 0) return [400];
   const offset = Math.max(Number(page) * Number(count) - Number(count), 0);
-  const client = await pool.connect();
   try {
+    const client = await pool.connect();
     const { rows } = await client.query(getQuestionsSQL, [product_id, count, offset]);
     return [null, rows[0].jsonb_build_object];
   } catch (e) {

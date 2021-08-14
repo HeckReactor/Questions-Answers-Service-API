@@ -5,8 +5,8 @@ const Models = require('../../models');
 // GET /qa/questions/:question_id/answers
 router.get('/questions/:question_id/answers', async (req, res, next) => {
   const [err, answers] = await Models.qa.questions.getAnswers(req.params.question_id);
-  if (err) return next([500]);
-  next();
+  if (err) return next([err]);
+  return next();
 });
 
 // POST /qa/questions/:question_id/answers
