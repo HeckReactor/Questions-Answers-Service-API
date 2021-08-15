@@ -74,26 +74,40 @@ const postQuestion = async ({
   }
 };
 
-const postAnswer = async ({ question_id }, {
+const postAnswer = async ({
+  question_id,
+}, {
   body,
   name,
   email,
   photos,
 }) => {
+  if (!body || !name || !email) return [400];
+  if (photos && !Array.isArray(photos)) return [400];
   const client = await pool.connect();
   try {
-    return [200];
+    // Insert content first
+    const { rows } = await client.query(`
+      INSERT INTO answers (body, username, email, question_id)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id;
+    `, [body, name, email, question_id]);
+    // Then insert photos on returned answer id
+    if (photos && photos.length) {
+      const newArray = new Array(photos.length);
+      newArray.fill(rows[0].id);
+      await client.query(`
+        INSERT INTO photos (answer_id, photo_url)
+        SELECT * FROM UNNEST ($1::int[], $2::text[])
+      `, [newArray, photos]);
+    }
+    return [null];
   } catch (e) {
     process.stdout.write(`${e.stack}\n`);
     return [500];
   } finally {
     client.release();
   }
-  console.log(question_id);
-  console.log(body, name, email);
-  console.log(photos);
-  console.log('innie');
-  return [500];
 };
 
 const reportQuestion = async ({ question_id }) => {
