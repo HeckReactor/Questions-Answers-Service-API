@@ -20,8 +20,10 @@ router.put('/qa/questions/:question_id/helpful', (req, res, next) => {
 });
 
 // PUT /qa/questions/:question_id/report
-router.put('/questions/:question_id/report', (req, res, next) => {
-
+router.put('/questions/:question_id([0-9]+)/report', async (req, res, next) => {
+  const [err] = await Models.qa.questions.reportQuestion(req.params);
+  if (err) return next([err]);
+  return next([204]);
 });
 
 // PUT /qa/answers/:answer_id/helpful
