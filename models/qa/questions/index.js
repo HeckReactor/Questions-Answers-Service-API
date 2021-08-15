@@ -60,7 +60,48 @@ const postQuestion = async ({
   }
   const client = await pool.connect();
   try {
-    return [null, await client.query(postQuestionQuery, [body, name, email, product_id])];
+    return [null, await client.query(postQuestionQuery, [
+      body,
+      name,
+      email,
+      product_id,
+    ])];
+  } catch (e) {
+    process.stdout.write(`${e.stack}\n`);
+    return [500];
+  } finally {
+    client.release();
+  }
+};
+
+const postAnswer = async ({
+  question_id,
+}, {
+  body,
+  name,
+  email,
+  photos,
+}) => {
+  if (!body || !name || !email) return [400];
+  if (photos && !Array.isArray(photos)) return [400];
+  const client = await pool.connect();
+  try {
+    // Insert content first
+    const { rows } = await client.query(`
+      INSERT INTO answers (body, username, email, question_id)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id;
+    `, [body, name, email, question_id]);
+    // Then insert photos on returned answer id
+    if (photos && photos.length) {
+      const newArray = new Array(photos.length);
+      newArray.fill(rows[0].id);
+      await client.query(`
+        INSERT INTO photos (answer_id, photo_url)
+        SELECT * FROM UNNEST ($1::int[], $2::text[])
+      `, [newArray, photos]);
+    }
+    return [null];
   } catch (e) {
     process.stdout.write(`${e.stack}\n`);
     return [500];
@@ -85,9 +126,28 @@ const reportQuestion = async ({ question_id }) => {
   }
 };
 
+const markHelpful = async ({ id, contentType }) => {
+  if (!['questions', 'answers'].includes(contentType.toLowerCase())) return [400];
+  const client = await pool.connect();
+  try {
+    return [null, await client.query(`
+      UPDATE ${contentType}
+      SET helpful = helpful + 1
+      WHERE id = $1;
+    `, [id])];
+  } catch (e) {
+    process.stdout.write(`${e.stack}\n`);
+    return [500];
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   get: getQuestions,
   post: postQuestion,
   getAnswers,
   reportQuestion,
+  markHelpful,
+  postAnswer,
 };

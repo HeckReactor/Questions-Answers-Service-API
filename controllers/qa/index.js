@@ -10,13 +10,18 @@ router.get('/questions/:question_id/answers', async (req, res, next) => {
 });
 
 // POST /qa/questions/:question_id/answers
-router.post('/questions/:question_id/answers', (req, res, next) => {
-
+router.post('/questions/:question_id([0-9]+)/answers', async (req, res, next) => {
+  const [err] = await Models.qa.questions.postAnswer(req.params, req.body);
+  if (err) return next([err]);
+  return next([201]);
 });
 
+// PUT /qa/answers/:question_id/helpful
 // PUT /qa/questions/:question_id/helpful
-router.put('/qa/questions/:question_id/helpful', (req, res, next) => {
-
+router.put('/:contentType(questions|answers)/:id([0-9]+)/helpful', async (req, res, next) => {
+  const [err] = await Models.qa.questions.markHelpful(req.params);
+  if (err) return next([err]);
+  return next([204]);
 });
 
 // PUT /qa/questions/:question_id/report
@@ -26,14 +31,11 @@ router.put('/questions/:question_id([0-9]+)/report', async (req, res, next) => {
   return next([204]);
 });
 
-// PUT /qa/answers/:answer_id/helpful
-router.put('/answers/:answer_id/helpful', (req, res, next) => {
-
-});
-
 // PUT /qa/answers/:answer_id/report
-router.put('/answers/:answer_id/report', (req, res, next) => {
-  console.log(req.params);
+router.put('/answers/:answer_id([0-9]+)/report', async (req, res, next) => {
+  const [err] = await Models.qa.answers.reportAnswer(req.params);
+  if (err) return next([err]);
+  return next([204]);
 });
 
 // POST /qa/questions
