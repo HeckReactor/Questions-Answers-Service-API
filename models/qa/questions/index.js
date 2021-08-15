@@ -4,6 +4,7 @@
 const { pool } = require('#db');
 const getQuestionsQuery = require('./getQuestionsQuery');
 const getAnswersQuery = require('./getAnswersQuery');
+const postQuestionQuery = require('./postQuestionQuery');
 
 const calculateOffset = (page, count) => {
   if ([parseInt(page, 10), parseInt(count, 10)].includes(NaN)) return [400];
@@ -48,9 +49,24 @@ const getAnswers = async (question_id, { page = 1, count = 5 }) => {
   }
 };
 
-const postQuestion = async () => {
-  console.log('post');
-  return 1;
+const postQuestion = async ({
+  body,
+  name,
+  email,
+  product_id,
+}) => {
+  if (!(body && name && email && product_id && !Number.isNaN(product_id))) {
+    return [400];
+  }
+  const client = await pool.connect();
+  try {
+    return [201, await client.query(postQuestionQuery, [body, name, email, product_id])];
+  } catch (e) {
+    process.stdout.write(`${e.stack}\n`);
+    return [500];
+  } finally {
+    client.release();
+  }
 };
 
 module.exports = {
