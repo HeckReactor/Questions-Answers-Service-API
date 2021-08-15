@@ -38,6 +38,8 @@ const parseProducts = async () => {
       }
     }
   }
+  const client = await pool.connect();
+  await client.query('SELECT setval(\'products_id_seq\', (SELECT MAX(id) FROM products)+1)');
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
   return 1;
 };
@@ -80,6 +82,8 @@ const parseQuestions = async () => {
       process.stdout.write(`${record}\n`);
     }
   }
+  const client = await pool.connect();
+  await client.query('SELECT setval(\'questions_id_seq\', (SELECT MAX(id) FROM questions)+1)');
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
   return 1;
 };
@@ -122,6 +126,8 @@ const parseAnswers = async () => {
       process.stdout.write(`${record}\n`);
     }
   }
+  const client = await pool.connect();
+  await client.query('SELECT setval(\'answers_id_seq\', (SELECT MAX(id) FROM answers)+1)');
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
   return 1;
 };
@@ -157,6 +163,8 @@ const parseAnswerPhotos = async () => {
       process.stdout.write(`${record}\n`);
     }
   }
+  const client = await pool.connect();
+  await client.query('SELECT setval(\'photos_id_seq\', (SELECT MAX(id) FROM photos)+1)');
   process.stdout.write(`\x1b[32m\x1b[1mOperation Complete. ${count} records processed.\x1b[0m\n\n`);
   return 1;
 };
@@ -166,7 +174,7 @@ const parseAll = async () => {
   await parseQuestions();
   await parseAnswers();
   await parseAnswerPhotos();
-  pool.end();
+  return 1;
 };
 
 const parseMethods = {
@@ -177,4 +185,8 @@ const parseMethods = {
   all: parseAll,
 };
 
-parseMethods[datasetName]();
+(async () => {
+  await parseMethods[datasetName]();
+  pool.end();
+  return 1;
+})();

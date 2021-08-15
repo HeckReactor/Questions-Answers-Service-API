@@ -48,8 +48,9 @@ const getAnswers = async (question_id, { page = 1, count = 5 }) => {
   }
 };
 
-const postQuestion = () => {
+const postQuestion = async () => {
   console.log('post');
+  return 1;
 };
 
 module.exports = {

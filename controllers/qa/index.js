@@ -36,6 +36,7 @@ router.put('/answers/:answer_id/report', (req, res, next) => {
 
 // POST /qa/questions
 router.post('/questions', async (req, res, next) => {
+  await Models.qa.questions.postQuestion();
   // const [err, questions] = await Models.qa.questions.get(req.query);
   // if (err) return next([err]);
   // return next([200, questions]);

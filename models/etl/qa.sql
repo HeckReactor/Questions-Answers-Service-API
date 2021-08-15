@@ -20,7 +20,7 @@ CREATE TABLE questions (
   body VARCHAR NOT NULL,
   username VARCHAR(100),
   email VARCHAR(255),
-  created_at timestamp with time zone
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE answers (
@@ -31,7 +31,7 @@ CREATE TABLE answers (
   body VARCHAR NOT NULL,
   username VARCHAR(100),
   email VARCHAR(255),
-  created_at timestamp with time zone
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE photos (
