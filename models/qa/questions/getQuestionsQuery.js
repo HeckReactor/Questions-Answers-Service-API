@@ -5,7 +5,7 @@ module.exports = `
     'totalResults', (
       SELECT COUNT(*)
       FROM questions q
-      WHERE q.product_id = $1
+      WHERE q.product_id = $1 AND q.reported != 'true'
     )
   )
   FROM (
@@ -37,12 +37,12 @@ module.exports = `
             )
           ), '[]'::jsonb)
           FROM answers as a
-          WHERE a.question_id = q.id
+          WHERE a.question_id = q.id AND a.reported != 'true'
         )
       )
     ) q_obj
     FROM questions q
-    WHERE q.product_id = $1
+    WHERE q.product_id = $1 AND q.reported != 'true'
     LIMIT $2 OFFSET $3
   ) result;
 `;
