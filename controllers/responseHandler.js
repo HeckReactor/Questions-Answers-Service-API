@@ -17,5 +17,6 @@ module.exports = ([statusCode, data], req, res, next) => {
   };
   const matchingStatusObject = (responses[statusCode] && { ...responses[statusCode], statusCode })
     || { ...responses[530], statusCode: 530 };
+  if (statusCode === 204) return res.status(204).send();
   res.status(matchingStatusObject.statusCode).json(matchingStatusObject);
 };
