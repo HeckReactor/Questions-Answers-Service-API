@@ -10,12 +10,12 @@ router.get('/questions/:question_id/answers', async (req, res, next) => {
 });
 
 // POST /qa/questions/:question_id/answers
-router.post('/questions/:question_id/answers', (req, res, next) => {
+router.post('/questions/:question_id([0-9]+)/answers', (req, res, next) => {
 
 });
 
 // PUT /qa/questions/:question_id/helpful
-router.put('/qa/questions/:question_id/helpful', (req, res, next) => {
+router.put('/questions/:question_id([0-9]+)/helpful', (req, res, next) => {
 
 });
 
@@ -27,13 +27,15 @@ router.put('/questions/:question_id([0-9]+)/report', async (req, res, next) => {
 });
 
 // PUT /qa/answers/:answer_id/helpful
-router.put('/answers/:answer_id/helpful', (req, res, next) => {
+router.put('/answers/:answer_id([0-9]+)/helpful', (req, res, next) => {
 
 });
 
 // PUT /qa/answers/:answer_id/report
-router.put('/answers/:answer_id/report', (req, res, next) => {
-  console.log(req.params);
+router.put('/answers/:answer_id([0-9]+)/report', async (req, res, next) => {
+  const [err] = await Models.qa.answers.reportAnswer(req.params);
+  if (err) return next([err]);
+  return next([204]);
 });
 
 // POST /qa/questions
