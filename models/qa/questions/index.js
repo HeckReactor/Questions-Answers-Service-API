@@ -60,13 +60,40 @@ const postQuestion = async ({
   }
   const client = await pool.connect();
   try {
-    return [null, await client.query(postQuestionQuery, [body, name, email, product_id])];
+    return [null, await client.query(postQuestionQuery, [
+      body,
+      name,
+      email,
+      product_id,
+    ])];
   } catch (e) {
     process.stdout.write(`${e.stack}\n`);
     return [500];
   } finally {
     client.release();
   }
+};
+
+const postAnswer = async ({ question_id }, {
+  body,
+  name,
+  email,
+  photos,
+}) => {
+  const client = await pool.connect();
+  try {
+    return [200];
+  } catch (e) {
+    process.stdout.write(`${e.stack}\n`);
+    return [500];
+  } finally {
+    client.release();
+  }
+  console.log(question_id);
+  console.log(body, name, email);
+  console.log(photos);
+  console.log('innie');
+  return [500];
 };
 
 const reportQuestion = async ({ question_id }) => {
@@ -85,9 +112,28 @@ const reportQuestion = async ({ question_id }) => {
   }
 };
 
+const markHelpful = async ({ id, contentType }) => {
+  if (!['questions', 'answers'].includes(contentType.toLowerCase())) return [400];
+  const client = await pool.connect();
+  try {
+    return [null, await client.query(`
+      UPDATE ${contentType}
+      SET helpful = helpful + 1
+      WHERE id = $1;
+    `, [id])];
+  } catch (e) {
+    process.stdout.write(`${e.stack}\n`);
+    return [500];
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   get: getQuestions,
   post: postQuestion,
   getAnswers,
   reportQuestion,
+  markHelpful,
+  postAnswer,
 };
