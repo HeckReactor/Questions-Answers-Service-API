@@ -3,10 +3,10 @@ const router = require('express').Router();
 const Models = require('../../models');
 
 // GET /qa/questions/:question_id/answers
-router.get('/questions/:question_id/answers', (req, res, next) => {
-  Models.qa.questions.get();
-  console.log(req.params);
-  next();
+router.get('/questions/:question_id/answers', async (req, res, next) => {
+  const [err, answers] = await Models.qa.questions.getAnswers(req.params.question_id, req.query);
+  if (err) return next([err]);
+  return next([200, answers]);
 });
 
 // POST /qa/questions/:question_id/answers
@@ -35,16 +35,19 @@ router.put('/answers/:answer_id/report', (req, res, next) => {
 });
 
 // POST /qa/questions
-router.post('/questions', (req, res, next) => {
-  console.log(req.params);
-  next([200, 'test']);
+router.post('/questions', async (req, res, next) => {
+  const [err, id] = await Models.qa.questions.post(req.body);
+  if (err) return next([err]);
+  // Resource created
+  return next([201, id]);
 });
 
 // GET /qa/questions
 router.get('/questions', async (req, res, next) => {
+  if (req.query.product_id === undefined) return next([400]);
   const [err, questions] = await Models.qa.questions.get(req.query);
-  if (err) next([err]);
-  next([200, questions]);
+  if (err) return next([err]);
+  return next([200, questions]);
 });
 
 module.exports = router;

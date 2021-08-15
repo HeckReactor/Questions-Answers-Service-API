@@ -18,7 +18,7 @@ module.exports = `
         'question_helpfulness', q.helpful,
         'reported', q.reported,
         'answers', (
-          SELECT (jsonb_object_agg(
+          SELECT COALESCE(jsonb_object_agg(
             a.id, jsonb_build_object(
               'id', a.id,
               'body', a.body,
@@ -26,16 +26,16 @@ module.exports = `
               'answerer_name', a.username,
               'helpfulness', a.helpful,
               'photos', (
-                SELECT
+                SELECT COALESCE(
                   jsonb_agg(jsonb_build_object(
                     'id', p.id,
                     'url', p.photo_url
-                  ))
+                  )), '[]'::jsonb)
                 FROM photos p
                 WHERE p.answer_id = a.id
               )
             )
-          ))
+          ), '[]'::jsonb)
           FROM answers as a
           WHERE a.question_id = q.id
         )
