@@ -60,7 +60,23 @@ const postQuestion = async ({
   }
   const client = await pool.connect();
   try {
-    return [201, await client.query(postQuestionQuery, [body, name, email, product_id])];
+    return [null, await client.query(postQuestionQuery, [body, name, email, product_id])];
+  } catch (e) {
+    process.stdout.write(`${e.stack}\n`);
+    return [500];
+  } finally {
+    client.release();
+  }
+};
+
+const reportQuestion = async ({ question_id }) => {
+  const client = await pool.connect();
+  try {
+    return [null, await client.query(`
+      UPDATE questions
+      SET reported = 'true'
+      WHERE id = $1
+    `, [question_id])];
   } catch (e) {
     process.stdout.write(`${e.stack}\n`);
     return [500];
@@ -73,4 +89,5 @@ module.exports = {
   get: getQuestions,
   post: postQuestion,
   getAnswers,
+  reportQuestion,
 };
