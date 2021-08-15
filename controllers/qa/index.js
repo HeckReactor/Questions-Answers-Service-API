@@ -35,13 +35,17 @@ router.put('/answers/:answer_id/report', (req, res, next) => {
 });
 
 // POST /qa/questions
-router.post('/questions', (req, res, next) => {
-  console.log(req.params);
-  next([200, 'test']);
+router.post('/questions', async (req, res, next) => {
+  // const [err, questions] = await Models.qa.questions.get(req.query);
+  // if (err) return next([err]);
+  // return next([200, questions]);
+  // Resource created
+  return next([201, 'test']);
 });
 
 // GET /qa/questions
 router.get('/questions', async (req, res, next) => {
+  if (req.query.product_id === undefined) return next([400]);
   const [err, questions] = await Models.qa.questions.get(req.query);
   if (err) return next([err]);
   return next([200, questions]);
