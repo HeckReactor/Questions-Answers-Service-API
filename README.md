@@ -38,4 +38,29 @@ The client expected a service that yielded a <50ms response time E2E, while also
 | email          | text    | Email address for question asker                            |
 | product_id     | integer | Required ID of the Product for which the question is posted |
 
+`[POST] /qa/questions/:question_id/answers`
+| Parameter | Type | Description |
+| - | - | - |
+| A | B | C |
+
+`[PUT] /qa/questions/:question_id/helpful`
+| Parameter | Type | Description |
+| - | - | - |
+| A | B | C |
+
+`[PUT] /qa/questions/:question_id/report`
+| Parameter | Type | Description |
+| - | - | - |
+| A | B | C |
+
+`[PUT] /qa/answers/:answer_id/helpful`
+| Parameter | Type | Description |
+| - | - | - |
+| A | B | C |
+
+`[PUT] /qa/answers/:answer_id/report`
+| Parameter | Type | Description |
+| - | - | - |
+| A | B | C |
+
 ## Closing Thoughts
