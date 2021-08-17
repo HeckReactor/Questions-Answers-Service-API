@@ -14,10 +14,20 @@ The client expected a service that yielded a <50ms response time E2E, while also
 
 ## Endpoints
 `[GET] /qa/questions`
-| Parameter  | Type | Description |
-| ------------- | ------------- | ------------- |
-| product_id  | integer | Specifies the product for which to retrieve questions.    |
-| page        | integer | Selects the page of results to return. Default 1.         |
-| count       | integer | Specifies how many results per page to return. Default 5. |
+| Query Parameter | Type    | Description                                               |
+| --------------- | ------- | --------------------------------------------------------- |
+| product_id      | integer | Specifies the product for which to retrieve questions.    |
+| page            | integer | Selects the page of results to return. Default 1.         |
+| count           | integer | Specifies how many results per page to return. Default 5. |
+
+`[GET] /qa/questions/:question_id/answers`
+| Parameter   | Type    | Description                                             |
+| ----------- | ------- | ------------------------------------------------------- |
+| question_id | integer | Required ID of the question for wich answers are needed |
+
+| Query Parameter | Type    | Description                                               |
+| --------------- | ------- | --------------------------------------------------------- |
+| page            | integer | Selects the page of results to return. Default 1.         |
+| count           | integer | Specifies how many results per page to return. Default 5. |
 
 ## Closing Thoughts
