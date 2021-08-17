@@ -21,13 +21,21 @@ The client expected a service that yielded a <50ms response time E2E, while also
 | count           | integer | Specifies how many results per page to return. Default 5. |
 
 `[GET] /qa/questions/:question_id/answers`
-| Parameter   | Type    | Description                                             |
-| ----------- | ------- | ------------------------------------------------------- |
-| question_id | integer | Required ID of the question for wich answers are needed |
+| Parameter   | Type    | Description                                              |
+| ----------- | ------- | -------------------------------------------------------- |
+| question_id | integer | Required ID of the question for which answers are needed |
 
 | Query Parameter | Type    | Description                                               |
 | --------------- | ------- | --------------------------------------------------------- |
 | page            | integer | Selects the page of results to return. Default 1.         |
 | count           | integer | Specifies how many results per page to return. Default 5. |
+
+`[POST] /qa/questions`
+| Body Parameter | Type    | Description                                                 |
+| -------------- | ------- | ----------------------------------------------------------- |
+| body           | text    | Text of question being asked                                |
+| name           | text    | Username for question asker                                 |
+| email          | text    | Email address for question asker                            |
+| product_id     | integer | Required ID of the Product for which the question is posted |
 
 ## Closing Thoughts
