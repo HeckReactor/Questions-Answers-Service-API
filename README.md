@@ -13,6 +13,9 @@ The client expected a service that yielded a <50ms response time E2E, while also
 6. Run `npm start` to start the nodemon instance.
 
 ## Endpoints
+<details>
+  <summary>View API Endpoints</summary>
+  
 `[GET] /qa/questions`
 | Query Parameter | Type    | Description                                               |
 | --------------- | ------- | --------------------------------------------------------- |
@@ -62,5 +65,6 @@ The client expected a service that yielded a <50ms response time E2E, while also
 | Parameter | Type | Description |
 | - | - | - |
 | A | B | C |
+</details>
 
 ## Closing Thoughts
